@@ -9,9 +9,6 @@ def abyss(geno, bottleneck_nr, epoch, patience):
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(geno, geno, test_size=0.2, random_state=42)
     
-    # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(geno, geno, test_size=0.2, random_state=42)
-    
     # Regularization parameter
     l2_regularizer = 0.001
     
@@ -34,13 +31,13 @@ def abyss(geno, bottleneck_nr, epoch, patience):
     # Fit the original model with Early Stopping
     history = autoencoder.fit(X_train, y_train, epochs=epoch, batch_size=32, validation_split=0.2, callbacks=[early_stopping], verbose=0)
     
-    # Extract the bottleneck layer
+    # Extract the bottleneck layer after fitting the model
     bottleneck_model = tf.keras.Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('bottleneck').output)
+    
     return autoencoder, bottleneck_model, history
-
+    
 # deep abyss
 def deep_abyss(geno, bottle, epoch, patience, pheno):
-    dim_columns = ['dim{}'.format(i) for i in range(1, bottle+1)]
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test, pheno_train, pheno_test = train_test_split(geno, geno, pheno, test_size=0.2, random_state=42)
 
@@ -55,17 +52,17 @@ def deep_abyss(geno, bottle, epoch, patience, pheno):
     input_layer_pheno = Input(shape=input_shape_pheno, name='input_pheno')
 
     # Create layers
-    encoder_init_1 = layers.Dense(bottle, 
+    encoder_init_1 = Dense(bottle, 
                            activation="elu", 
                            name="encoder_init_1",
                            kernel_regularizer=regularizers.l2(l2_lambda))
     
-    decoder_init_2 = layers.Dense(input_shape_geno[0], 
+    decoder_init_2 = Dense(input_shape_geno[0], 
                            activation="tanh", 
                            name="decoder_init_2",
                            kernel_regularizer=regularizers.l2(l2_lambda))
     
-    predictor = layers.Dense(input_shape_pheno[0], 
+    predictor = Dense(input_shape_pheno[0], 
                            activation="linear", 
                            name="predictor",
                            kernel_regularizer=regularizers.l2(l2_lambda))
@@ -89,9 +86,7 @@ def deep_abyss(geno, bottle, epoch, patience, pheno):
     
     # Define the model
     autoencoder = Model(inputs=input_layer_geno, outputs=[allele_frequency_probability, y_predictor], name="fishy")
-    # Extract the bottleneck layer
-    bottleneck_model = tf.keras.Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('encoder_init_1').output)
-    
+
     # Compile the model
     autoencoder.compile(optimizer='adam', loss=['mse', 'mse'], loss_weights=[1.0, 2.0])
     
@@ -100,5 +95,7 @@ def deep_abyss(geno, bottle, epoch, patience, pheno):
     
     # Train the model
     history = autoencoder.fit(X_train, [X_train, pheno_train], epochs=epoch, batch_size=32, validation_data=(X_test, [X_test, pheno_test]), callbacks=[early_stopping], verbose=0)
-    
+
+    # Extract the bottleneck layer
+    bottleneck_model = tf.keras.Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('encoder_init_1').output)
     return autoencoder, bottleneck_model, history
