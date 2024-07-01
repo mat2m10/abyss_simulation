@@ -1,0 +1,16 @@
+# Define parameters
+G <- 20
+L <- 100
+c <- 50
+k <- 20
+M <- 0.1
+
+# Allele frequency Thresholds
+very_rare_threshold_L <- 0
+very_rare_threshold_H <- 0.05
+
+rare_threshold_L <- 0.05
+rare_threshold_H <- 0.2
+
+common_threshold_L <- 0.2
+common_threshold_H <- 0.5
