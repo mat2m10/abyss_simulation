@@ -30,7 +30,7 @@ def abyss(geno, bottleneck_nr, epoch, patience):
     
     # Fit the original model with Early Stopping
     history = autoencoder.fit(X_train, y_train, epochs=epoch, batch_size=32, validation_split=0.2, callbacks=[early_stopping], verbose=0)
-    
+    autoencoder.predict(X_train[:1])
     # Extract the bottleneck layer after fitting the model
     bottleneck_model = tf.keras.Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('bottleneck').output)
     
