@@ -251,3 +251,131 @@ def abyss_maf_linreg(complete, y, probmaf):
     abyss_maf_df['logPs_abyss_maf'] = logPs_abyss_maf
     abyss_maf_df['expected_logP'] = expected_logP
     return abyss_maf_df
+
+
+def deep_abyss_bottle_linreg(complete, y, deep_abyss_bottle):
+    Ps_deep_abyss_bottle = []
+    intercepts_deep_abyss_bottle = []
+    snps_deep_abyss_bottle = []
+    AFs_deep_abyss_bottle = []
+    coefs_deep_abyss_bottle = []
+    faulty_snps_deep_abyss_bottle = []
+    
+    for snp in list(complete.columns):
+        index_to_keep = snp.split("_AF_")[0]
+        X_snp = np.array(list(complete[snp]))
+        X = np.column_stack((X_snp, np.array(deep_abyss_bottle)))
+        X = sm.add_constant(X)
+        try:
+            #intercept, beta_hat, se_beta, t_values, p_values = lin_reg(pheno, geno)
+            model = sm.OLS(y, X).fit()
+            p_values = model.pvalues[1]
+            betas = model.params[1:]
+            beta_hat = betas[0]
+            se_beta = model.bse[1]
+            t_values = model.tvalues[1]
+            Ps_deep_abyss_bottle.append(p_values)
+            snps_deep_abyss_bottle.append(snp.split("_AF_")[0])
+            AFs_deep_abyss_bottle.append(snp.split("_AF_")[1])
+            coefs_deep_abyss_bottle.append(beta_hat)
+        except Exception as e:
+            faulty_snps_deep_abyss_bottle.append(snp)
+            print(e)
+
+    Ps_deep_abyss_bottle = np.sort(Ps_deep_abyss_bottle)
+    epsilon = 1e-100
+    logPs_deep_abyss_bottle = np.sort(-np.log10(Ps_deep_abyss_bottle+epsilon))
+    deep_abyss_bottle_df = pd.DataFrame({'coeff':coefs_deep_abyss_bottle, "AFs":AFs_deep_abyss_bottle, "Ps_deep_abyss_bottle": Ps_deep_abyss_bottle})
+    n = len(deep_abyss_bottle_df)
+    expected_quantiles = np.arange(1, n + 1) / n
+    expected_logP = np.sort(-np.log10(expected_quantiles+epsilon))
+    deep_abyss_bottle_df['expected_P'] = expected_quantiles
+    deep_abyss_bottle_df['logPs_deep_abyss_bottle'] = logPs_deep_abyss_bottle
+    deep_abyss_bottle_df['expected_logP'] = expected_logP
+    return deep_abyss_bottle_df
+
+
+def deep_abyss_maf_linreg(complete, y, deep_probmaf):
+
+    Ps_deep_abyss_maf = []
+    intercepts_deep_abyss_maf = []
+    snps_deep_abyss_maf = []
+    AFs_deep_abyss_maf = []
+    coefs_deep_abyss_maf = []
+    faulty_snps_deep_abyss_maf = []
+    
+    for snp in list(complete.columns):
+        index_to_keep = snp.split("_AF_")[0]
+        X_snp = np.array(list(complete[snp]))
+        X = np.column_stack((X_snp, np.array(deep_probmaf[snp])))
+        X = sm.add_constant(X)
+        try:
+            #intercept, beta_hat, se_beta, t_values, p_values = lin_reg(pheno, geno)
+            model = sm.OLS(y, X).fit()
+            p_values = model.pvalues[1]
+            betas = model.params[1:]
+            beta_hat = betas[0]
+            se_beta = model.bse[1]
+            t_values = model.tvalues[1]
+            Ps_deep_abyss_maf.append(p_values)
+            snps_deep_abyss_maf.append(snp.split("_AF_")[0])
+            AFs_deep_abyss_maf.append(snp.split("_AF_")[1])
+            coefs_deep_abyss_maf.append(beta_hat)
+        except Exception as e:
+            faulty_snps_deep_abyss_maf.append(snp)
+            print(e)
+
+    Ps_deep_abyss_maf = np.sort(Ps_deep_abyss_maf)
+    epsilon = 1e-100
+    logPs_deep_abyss_maf = np.sort(-np.log10(Ps_deep_abyss_maf+epsilon))
+    deep_abyss_maf_df = pd.DataFrame({'coeff':coefs_deep_abyss_maf, "AFs":AFs_deep_abyss_maf, "Ps_deep_abyss_maf": Ps_deep_abyss_maf})
+    n = len(deep_abyss_maf_df)
+    expected_quantiles = np.arange(1, n + 1) / n
+    expected_logP = np.sort(-np.log10(expected_quantiles+epsilon))
+    deep_abyss_maf_df['expected_P'] = expected_quantiles
+    deep_abyss_maf_df['logPs_deep_abyss_maf'] = logPs_deep_abyss_maf
+    deep_abyss_maf_df['expected_logP'] = expected_logP
+    return deep_abyss_maf_df
+
+def deep_abyss_pred_linreg(complete, y, deep_abyss_pred):
+    y = y - np.array(deep_abyss_pred).flatten()
+    Ps_deep_abyss_pred = []
+    intercepts_deep_abyss_pred = []
+    snps_deep_abyss_pred = []
+    AFs_deep_abyss_pred = []
+    coefs_deep_abyss_pred = []
+    faulty_snps_deep_abyss_pred = []
+    
+    for snp in list(complete.columns):
+        index_to_keep = snp.split("_AF_")[0]
+        X_snp = np.array(list(complete[snp]))
+        #X = np.column_stack((X_snp, np.array(deep_abyss_pred).flatten()))
+        X = sm.add_constant(X_snp)
+        try:
+            #intercept, beta_hat, se_beta, t_values, p_values = lin_reg(pheno, geno)
+            model = sm.OLS(y, X).fit()
+            p_values = model.pvalues[1]
+            betas = model.params[1:]
+            beta_hat = betas[0]
+            se_beta = model.bse[1]
+            t_values = model.tvalues[1]
+            Ps_deep_abyss_pred.append(p_values)
+            snps_deep_abyss_pred.append(snp.split("_AF_")[0])
+            AFs_deep_abyss_pred.append(snp.split("_AF_")[1])
+            coefs_deep_abyss_pred.append(beta_hat)
+        except Exception as e:
+            faulty_snps_deep_abyss_pred.append(snp)
+            print(e)
+
+    Ps_deep_abyss_pred = np.sort(Ps_deep_abyss_pred)
+    epsilon = 1e-100
+    logPs_deep_abyss_pred = np.sort(-np.log10(Ps_deep_abyss_pred+epsilon))
+    deep_abyss_pred_df = pd.DataFrame({'coeff':coefs_deep_abyss_pred, "AFs":AFs_deep_abyss_pred, "Ps_deep_abyss_pred": Ps_deep_abyss_pred})
+    n = len(deep_abyss_pred_df)
+    expected_quantiles = np.arange(1, n + 1) / n
+    expected_logP = np.sort(-np.log10(expected_quantiles+epsilon))
+    deep_abyss_pred_df['expected_P'] = expected_quantiles
+    deep_abyss_pred_df['logPs_deep_abyss_pred'] = logPs_deep_abyss_pred
+    deep_abyss_pred_df['expected_logP'] = expected_logP
+    return deep_abyss_pred_df
+
