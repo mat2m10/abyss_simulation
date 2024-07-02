@@ -4,6 +4,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 import tensorflow as tf
 
 from tensorflow.keras import Input, Model, layers, regularizers
+from tensorflow.keras.layers import Input, Dense
 
 def abyss(geno, bottleneck_nr, epoch, patience):
     # Split the data into training and testing sets
@@ -30,9 +31,9 @@ def abyss(geno, bottleneck_nr, epoch, patience):
     
     # Fit the original model with Early Stopping
     history = autoencoder.fit(X_train, y_train, epochs=epoch, batch_size=32, validation_split=0.2, callbacks=[early_stopping], verbose=0)
-    autoencoder.predict(X_train[:1])
+
     # Extract the bottleneck layer after fitting the model
-    bottleneck_model = tf.keras.Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('bottleneck').output)
+    bottleneck_model = tf.keras.Model(inputs=autoencoder.inputs, outputs=autoencoder.get_layer('bottleneck').output)
     
     return autoencoder, bottleneck_model, history
     
@@ -88,7 +89,7 @@ def deep_abyss(geno, bottle, epoch, patience, pheno):
     autoencoder = Model(inputs=input_layer_geno, outputs=[allele_frequency_probability, y_predictor], name="fishy")
 
     # Compile the model
-    autoencoder.compile(optimizer='adam', loss=['mse', 'mse'], loss_weights=[1.0, 2.0])
+    autoencoder.compile(optimizer='adam', loss=['mse', 'mse'], loss_weights=[1.0, 1.0])
     
     # Define early stopping callback
     early_stopping = EarlyStopping(monitor='val_loss', patience=patience, restore_best_weights=True)
@@ -97,5 +98,5 @@ def deep_abyss(geno, bottle, epoch, patience, pheno):
     history = autoencoder.fit(X_train, [X_train, pheno_train], epochs=epoch, batch_size=32, validation_data=(X_test, [X_test, pheno_test]), callbacks=[early_stopping], verbose=0)
 
     # Extract the bottleneck layer
-    bottleneck_model = tf.keras.Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('encoder_init_1').output)
+    bottleneck_model = tf.keras.Model(inputs=autoencoder.inputs, outputs=autoencoder.get_layer('encoder_init_1').output)
     return autoencoder, bottleneck_model, history
