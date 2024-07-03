@@ -49,58 +49,9 @@ def simulate_quant_trait(mu, genotypes, beta=0, env=0):
     mean = mean - true_mean
     trait = []
     for element in mean:
-        trait.append(np.random.normal(element,0.005))
+        trait.append(np.random.normal(element,0.7))
     return trait
     
-def lin_reg(y, x, covariates=None):
-    # Reshape x to have a single feature
-    x = x.reshape(-1, 1)
-    
-    if covariates is not None:
-        # Ensure covariates are 2D
-        if len(covariates.shape) == 1:
-            covariates = covariates.reshape(-1, 1)
-        # Combine x and covariates
-        X = np.hstack((x, covariates))
-    else:
-        X = x
-    
-    # Fit the linear regression model
-    model = LinearRegression()
-    model.fit(X, y)
-    
-    # Extract coefficients
-    intercept = model.intercept_
-    betas = model.coef_
-    
-    # Coefficient of x (first feature)
-    beta_x = betas[0]
-    
-    # Calculate residuals
-    y_hat = model.predict(X)
-    residuals = y - y_hat
-    
-    # Degrees of freedom
-    n = len(y)
-    k = X.shape[1]  # Number of predictors including covariates
-    df_resid = n - k - 1  # n - (k + 1) because of the intercept
-    
-    # Residual standard error
-    s_e = np.sqrt(np.sum(residuals**2) / df_resid)
-    
-    # Calculate standard error of the coefficient of x
-    X_with_intercept = np.hstack((np.ones((n, 1)), X))
-    XTX_inv = np.linalg.inv(X_with_intercept.T @ X_with_intercept)
-    se_beta_x = s_e * np.sqrt(XTX_inv[1, 1])
-    
-    # Calculate t-value for the coefficient of x
-    t_value_x = beta_x / se_beta_x
-    
-    # Calculate p-value for the coefficient of x
-    p_value_x = (1 - t.cdf(np.abs(t_value_x), df_resid)) * 2
-    
-    # Return results specifically for x
-    return intercept, beta_x, se_beta_x, t_value_x, p_value_x
 
 def simulate_cc_status(geno, mu, beta_vector=0, env=0, snpXsnp=0):
     """
