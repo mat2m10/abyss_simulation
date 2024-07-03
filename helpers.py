@@ -49,7 +49,7 @@ def simulate_quant_trait(mu, genotypes, beta=0, env=0):
     mean = mean - true_mean
     trait = []
     for element in mean:
-        trait.append(np.random.normal(element,0.05))
+        trait.append(np.random.normal(element,0.005))
     return trait
     
 def lin_reg(y, x, covariates=None):

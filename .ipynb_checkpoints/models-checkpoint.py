@@ -211,7 +211,7 @@ def abyss_bottle_linreg(complete, y, AE_bottle):
     abyss_bottle_df['expected_logP'] = expected_logP
     return abyss_bottle_df
 
-def abyss_maf_linreg(complete, y, probmaf):
+def abyss_maf_linreg(complete, y, additive, dominant):
     Ps_abyss_maf = []
     intercepts_abyss_maf = []
     snps_abyss_maf = []
@@ -222,7 +222,7 @@ def abyss_maf_linreg(complete, y, probmaf):
     for snp in list(complete.columns):
         index_to_keep = snp.split("_AF_")[0]
         X_snp = np.array(list(complete[snp]))
-        X = np.column_stack((X_snp, np.array(probmaf[snp])))
+        X = np.column_stack((X_snp, np.array(additive[snp]), np.array(dominant[snp])))
         X = sm.add_constant(X)
         try:
             #intercept, beta_hat, se_beta, t_values, p_values = lin_reg(pheno, geno)
@@ -295,7 +295,7 @@ def deep_abyss_bottle_linreg(complete, y, deep_abyss_bottle):
     return deep_abyss_bottle_df
 
 
-def deep_abyss_maf_linreg(complete, y, deep_probmaf):
+def deep_abyss_maf_linreg(complete, y, additive, dominant):
 
     Ps_deep_abyss_maf = []
     intercepts_deep_abyss_maf = []
@@ -307,7 +307,7 @@ def deep_abyss_maf_linreg(complete, y, deep_probmaf):
     for snp in list(complete.columns):
         index_to_keep = snp.split("_AF_")[0]
         X_snp = np.array(list(complete[snp]))
-        X = np.column_stack((X_snp, np.array(deep_probmaf[snp])))
+        X = np.column_stack((X_snp, np.array(additive[snp]), np.array(dominant[snp])))
         X = sm.add_constant(X)
         try:
             #intercept, beta_hat, se_beta, t_values, p_values = lin_reg(pheno, geno)
@@ -338,7 +338,7 @@ def deep_abyss_maf_linreg(complete, y, deep_probmaf):
     return deep_abyss_maf_df
 
 def deep_abyss_pred_linreg(complete, y, deep_abyss_pred):
-    y = y - np.array(deep_abyss_pred).flatten()
+    #y = y - np.array(deep_abyss_pred).flatten()
     Ps_deep_abyss_pred = []
     intercepts_deep_abyss_pred = []
     snps_deep_abyss_pred = []
@@ -350,7 +350,9 @@ def deep_abyss_pred_linreg(complete, y, deep_abyss_pred):
         index_to_keep = snp.split("_AF_")[0]
         X_snp = np.array(list(complete[snp]))
         #X = np.column_stack((X_snp, np.array(deep_abyss_pred).flatten()))
-        X = sm.add_constant(X_snp)
+        X = np.column_stack((X_snp, y))
+        
+        X = sm.add_constant(X)
         try:
             #intercept, beta_hat, se_beta, t_values, p_values = lin_reg(pheno, geno)
             model = sm.OLS(y, X).fit()
