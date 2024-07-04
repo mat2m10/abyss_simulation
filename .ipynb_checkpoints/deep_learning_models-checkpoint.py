@@ -89,7 +89,7 @@ def deep_abyss(geno, bottle, epoch, patience, pheno):
     autoencoder = Model(inputs=input_layer_geno, outputs=[allele_frequency_probability, y_predictor], name="fishy")
 
     # Compile the model
-    autoencoder.compile(optimizer='adam', loss=['mse', 'mse'], loss_weights=[1.0, 1.0])
+    autoencoder.compile(optimizer='adam', loss=['mse', 'mse'], loss_weights=[2.0, 1.0])
     
     # Define early stopping callback
     early_stopping = EarlyStopping(monitor='val_loss', patience=patience, restore_best_weights=True)

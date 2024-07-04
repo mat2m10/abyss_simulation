@@ -42,14 +42,11 @@ def map_to_color(x, y, z, df):
     b = 0.5  # Blue component based on 'z'
     return (r, g, b)
 
-def simulate_quant_trait(mu, genotypes, beta=0, env=0):
+def simulate_quant_trait(mu, genotypes, beta=0, env=0, precision=0.1):
     mean = mu + np.dot(genotypes,beta) + env
-
-    true_mean = sum(mean) / len(mean)
-    mean = mean - true_mean
     trait = []
     for element in mean:
-        trait.append(np.random.normal(element,0.7))
+        trait.append(np.random.normal(element,precision))
     return trait
     
 

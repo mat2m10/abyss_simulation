@@ -47,7 +47,7 @@ def ols_regression(y, X1, covs=None):
     
     return beta_values, p_values
 
-def check_columns(geno, covs):
+def check_columns_covs(geno, covs):
     # Check if covs is None
     if covs is None:
         print(f"No Covs!")
@@ -55,47 +55,115 @@ def check_columns(geno, covs):
     
     # Check if covs is a DataFrame and its columns match geno's columns
     if isinstance(covs, pd.DataFrame):
-        
         if list(geno.columns) == list(covs.columns):
             print(f"Abyss!")
             return True
         else:
             print(f"Covs")
             return False
-    
-    # Return False if covs is neither None nor a DataFrame
+
+    # Check if covs is a dictionary and its keys match geno's columns
+    if isinstance(covs, dict):
+        if list(geno.columns) == list(covs.keys()):
+            print(f"Dictionary Match!")
+            return True
+        else:
+            print(f"Dictionary Mismatch!")
+            return False
+
+    # Return False if covs is neither None, a DataFrame, nor a dictionary
     print(f"Nothing works!")
     return False
 
+def check_columns_pheno(geno, pheno):
+    # Check if covs is None
+    if pheno is None:
+        print(f"No Phenotype!")
+        return False
+    
+    # Check if covs is a DataFrame and its columns match geno's columns
+    if isinstance(pheno, pd.DataFrame):
+        
+        if list(geno.columns) == list(pheno.columns):
+            print(f"Snp specific phenotype!")
+            return True
+        else:
+            print(f"Global phenotype")
+            return False
+    
+    # Return False if covs is neither None nor a DataFrame
+    print(f"Pheno is not None and not a dataframe")
+    return False
+    
 def manhattan_linear(geno, y, covs=None):
     Ps = []
     snps = []
     coefs = []
     AFs = []
-    # check if you have snp specific covariates
-
-    if check_columns(geno, covs):
+    if check_columns_pheno(geno, y):
+        
         # rename to not get the correct betas and p-values back
-        covs_with_suffix = covs.add_suffix('_covariate')
-        for snp in list(geno.columns):
-            X = geno[snp]
-            betas, p_values = ols_regression(y, X, covs_with_suffix[[f"{snp}_covariate"]])
-            
-            coefs.append(betas[snp])
-            Ps.append(p_values[snp])
-            
-            snps.append(snp.split("_AF_")[0])
-            AFs.append(snp.split("_AF_")[1])
+        pheno_with_suffix = y.add_suffix('_pheno')
+        if check_columns_covs(geno, covs):
+            # rename to not get the correct betas and p-values back
+            try:
+                covs_with_suffix = covs.add_suffix('_covariate')
+                # check if you have snp specific covariates
+                for snp in list(geno.columns):
+                    X = geno[snp]
+                    betas, p_values = ols_regression(pheno_with_suffix[[f"{snp}_pheno"]], X, covs_with_suffix[[f"{snp}_covariate"]])
+                    
+                    coefs.append(betas[snp])
+                    Ps.append(p_values[snp])
+                    
+                    snps.append(snp.split("_AF_")[0])
+                    AFs.append(snp.split("_AF_")[1])
+
+            except:
+                # Except if covs is a dictionnary
+                # check if you have snp specific covariates
+                for snp in list(geno.columns):
+                    X = geno[snp]
+                    betas, p_values = ols_regression(pheno_with_suffix[[f"{snp}_pheno"]], X, covs[f"{snp}"])
+                    
+                    coefs.append(betas[snp])
+                    Ps.append(p_values[snp])
+                    
+                    snps.append(snp.split("_AF_")[0])
+                    AFs.append(snp.split("_AF_")[1])
+        else:
+            for snp in list(geno.columns):
+                X = geno[snp]
+                betas, p_values = ols_regression(pheno_with_suffix[[f"{snp}_pheno"]], X, covs)
+                
+                coefs.append(betas[snp])
+                Ps.append(p_values[snp])
+                
+                snps.append(snp.split("_AF_")[0])
+                AFs.append(snp.split("_AF_")[1])
     else:
-        for snp in list(geno.columns):
-            X = geno[snp]
-            betas, p_values = ols_regression(y, X, covs)
-            
-            coefs.append(betas[snp])
-            Ps.append(p_values[snp])
-            
-            snps.append(snp.split("_AF_")[0])
-            AFs.append(snp.split("_AF_")[1])
+        if check_columns_covs(geno, covs):
+            # rename to not get the correct betas and p-values back
+            covs_with_suffix = covs.add_suffix('_covariate')
+            for snp in list(geno.columns):
+                X = geno[snp]
+                betas, p_values = ols_regression(y, X, covs_with_suffix[[f"{snp}_covariate"]])
+                
+                coefs.append(betas[snp])
+                Ps.append(p_values[snp])
+                
+                snps.append(snp.split("_AF_")[0])
+                AFs.append(snp.split("_AF_")[1])
+        else:
+            for snp in list(geno.columns):
+                X = geno[snp]
+                betas, p_values = ols_regression(y, X, covs)
+                
+                coefs.append(betas[snp])
+                Ps.append(p_values[snp])
+                
+                snps.append(snp.split("_AF_")[0])
+                AFs.append(snp.split("_AF_")[1])
     logPs = -np.log10(Ps)
     df = pd.DataFrame({'snp':snps,'coefs':coefs, "AFs":AFs, "Ps": Ps, "-logPs": logPs})
     return df
@@ -104,6 +172,7 @@ def gc(df):
     Ps = np.array(df['Ps'])
     coefs = list(df['coefs'])
     AFs = list(df['AFs'])
+    snps = list(df['snp'])
     median_chi2 = np.median(stats.chi2.ppf(1 - Ps, 1))
     expected_median = stats.chi2.ppf(0.5, 1)
     lambda_gc = median_chi2 / expected_median
@@ -117,6 +186,6 @@ def gc(df):
     # Convert adjusted chi-square statistics back to p-values
     Ps = stats.chi2.sf(chi2_corr, df=1)
     logPs = -np.log10(Ps)
-    GC_df = pd.DataFrame({'coefs':coefs, "AFs":AFs, "Ps": Ps, "-logPs": logPs})
+    GC_df = pd.DataFrame({'snp':snps, 'coefs':coefs, "AFs":AFs, "Ps": Ps, "-logPs": logPs})
     return GC_df
 
