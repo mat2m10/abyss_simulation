@@ -144,16 +144,30 @@ def manhattan_linear(geno, y, covs=None):
     else:
         if check_columns_covs(geno, covs):
             # rename to not get the correct betas and p-values back
-            covs_with_suffix = covs.add_suffix('_covariate')
-            for snp in list(geno.columns):
-                X = geno[snp]
-                betas, p_values = ols_regression(y, X, covs_with_suffix[[f"{snp}_covariate"]])
-                
-                coefs.append(betas[snp])
-                Ps.append(p_values[snp])
-                
-                snps.append(snp.split("_AF_")[0])
-                AFs.append(snp.split("_AF_")[1])
+            try:
+                covs_with_suffix = covs.add_suffix('_covariate')
+                for snp in list(geno.columns):
+                    X = geno[snp]
+                    betas, p_values = ols_regression(y, X, covs_with_suffix[[f"{snp}_covariate"]])
+                    
+                    coefs.append(betas[snp])
+                    Ps.append(p_values[snp])
+                    
+                    snps.append(snp.split("_AF_")[0])
+                    AFs.append(snp.split("_AF_")[1])
+
+            except:
+                # Except if covs is a dictionnary
+                # check if you have snp specific covariates
+                for snp in list(geno.columns):
+                    X = geno[snp]
+                    betas, p_values = ols_regression(y, X, covs[f"{snp}"])
+                    
+                    coefs.append(betas[snp])
+                    Ps.append(p_values[snp])
+                    
+                    snps.append(snp.split("_AF_")[0])
+                    AFs.append(snp.split("_AF_")[1])
         else:
             for snp in list(geno.columns):
                 X = geno[snp]
