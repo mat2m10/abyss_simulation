@@ -25,4 +25,4 @@ gauss_blob_risk_fun
 hi_gauss_blob_risk_fun
 
 _endcomment_
-NW_risk_fun
+three_square_risk_fun
