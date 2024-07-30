@@ -2,8 +2,8 @@
 G <- 20
 L <- 100
 c <- 50
-k <- 20
-M <- 0.2
+k <- 8
+M <- 0.1
 
 # Allele frequency Thresholds
 very_rare_threshold_L <- 0
