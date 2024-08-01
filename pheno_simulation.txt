@@ -25,4 +25,4 @@ gauss_blob_risk_fun
 hi_gauss_blob_risk_fun
 
 _endcomment_
-hi_square_risk_fun
+mid_mid_square_risk_fun
