@@ -125,7 +125,6 @@ def manhattan_linear(geno, y, covs=None):
                 for snp in list(geno.columns):
                     X = geno[snp]
                     betas, p_values = ols_regression(pheno_with_suffix[[f"{snp}_pheno"]], X, covs[f"{snp}"])
-                    
                     coefs.append(betas[snp])
                     Ps.append(p_values[snp])
                     
@@ -161,8 +160,8 @@ def manhattan_linear(geno, y, covs=None):
                 # check if you have snp specific covariates
                 for snp in list(geno.columns):
                     X = geno[snp]
+                    print(covs[f"{snp}"])
                     betas, p_values = ols_regression(y, X, covs[f"{snp}"])
-                    
                     coefs.append(betas[snp])
                     Ps.append(p_values[snp])
                     
