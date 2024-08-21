@@ -2,7 +2,7 @@
 G <- 40
 L <- 100
 c <- 50
-k <- 16
+k <- 4
 M <- 0.99
 
 # Allele frequency Thresholds
