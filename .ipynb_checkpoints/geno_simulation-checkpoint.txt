@@ -5,6 +5,10 @@ c <- 50
 k <- 4
 M <- 0.99
 HWE <- 1
+nr_humans <- 2000
+nr_snps <- 200
+bottleneck_nr <- 64
+
 
 # Allele frequency Thresholds
 very_rare_threshold_L <- 0
