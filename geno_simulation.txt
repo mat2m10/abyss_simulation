@@ -1,11 +1,11 @@
 # Define parameters
-G <- 40
+G <- 100
 L <- 100
 c <- 50
 k <- 4
-M <- 0.99
+M <- 0.1
 HWE <- 1
-nr_humans <- 200
+nr_humans <- 2000
 nr_snps <- 2000
 bottleneck_nr <- 64
 
