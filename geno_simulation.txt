@@ -9,7 +9,6 @@ nr_humans <- 2000
 nr_snps <- 2000
 bottleneck_nr <- 64
 
-
 # Allele frequency Thresholds
 very_rare_threshold_L <- 0
 very_rare_threshold_H <- 0.05
