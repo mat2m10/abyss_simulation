@@ -1,14 +1,13 @@
 # Define parameters
-G <- 50
-L <- 50
+G <- 100
+L <- 1000
 c <- 50
-k <- 2
+k <- 16
 M <- 0.1
 HWE <- 1
 nr_humans <- 2000
 nr_snps <- 2000
 bottleneck_nr <- 64
-
 
 # Allele frequency Thresholds
 very_rare_threshold_L <- 0
