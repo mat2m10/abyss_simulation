@@ -50,25 +50,25 @@ def ols_regression(y, X1, covs=None):
 def check_columns_covs(geno, covs):
     # Check if covs is None
     if covs is None:
-        print(f"No Covs!")
+        #print(f"No Covs!")
         return False
     
     # Check if covs is a DataFrame and its columns match geno's columns
     if isinstance(covs, pd.DataFrame):
         if list(geno.columns) == list(covs.columns):
-            print(f"Abyss!")
+            #print(f"Abyss!")
             return True
         else:
-            print(f"Covs")
+            #print(f"Covs")
             return False
 
     # Check if covs is a dictionary and its keys match geno's columns
     if isinstance(covs, dict):
         if list(geno.columns) == list(covs.keys()):
-            print(f"Dictionary Match!")
+            #print(f"Dictionary Match!")
             return True
         else:
-            print(f"Dictionary Mismatch!")
+            #print(f"Dictionary Mismatch!")
             return False
 
     # Return False if covs is neither None, a DataFrame, nor a dictionary
@@ -78,21 +78,21 @@ def check_columns_covs(geno, covs):
 def check_columns_pheno(geno, pheno):
     # Check if covs is None
     if pheno is None:
-        print(f"No Phenotype!")
+        #print(f"No Phenotype!")
         return False
     
     # Check if covs is a DataFrame and its columns match geno's columns
     if isinstance(pheno, pd.DataFrame):
         
         if list(geno.columns) == list(pheno.columns):
-            print(f"Snp specific phenotype!")
+            #print(f"Snp specific phenotype!")
             return True
         else:
-            print(f"Global phenotype")
+            #print(f"Global phenotype")
             return False
     
     # Return False if covs is neither None nor a DataFrame
-    print(f"Pheno is not None and not a dataframe")
+    #print(f"Pheno is not None and not a dataframe")
     return False
     
 def manhattan_linear(geno, y, covs=None):
