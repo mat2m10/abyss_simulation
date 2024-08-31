@@ -1,7 +1,7 @@
 # Define parameters
-G <- 40
-L <- 100
-c <- 100
+G <- 50
+L <- 50
+c <- 50
 k <- 8
 M <- 0.01
 HWE <- 1
