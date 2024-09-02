@@ -1,6 +1,6 @@
 # Define parameters
-G <- 1
-L <- 300
+G <- 100
+L <- 100
 c <- 50
 k <- 8
 M <- 0.01
