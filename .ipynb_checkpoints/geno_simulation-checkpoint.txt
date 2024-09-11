@@ -1,9 +1,9 @@
 # Define parameters
-G <- 100
-L <- 100
-c <- 50
-k <- 1
-M <- 0.01
+G <- 200
+L <- 200
+c <- 100
+k <- 4
+M <- 0.1
 HWE <- 1
 nr_humans <- 2000
 nr_snps <- 2000
