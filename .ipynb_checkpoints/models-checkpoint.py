@@ -35,7 +35,7 @@ def ols_regression(y, X1, covs=None):
     else:
         X = X1.to_frame()
     
-    X = sm.add_constant(X)  # Adds a column of ones to include an intercept in the model
+    #X = sm.add_constant(X)  # Adds a column of ones to include an intercept in the model
 
     # Fit the OLS model
     model = sm.OLS(y, X)
@@ -48,7 +48,7 @@ def ols_regression(y, X1, covs=None):
     return beta_values, p_values
 
 def check_columns_covs(geno, covs):
-    # Check if covs is None
+    # Check if covs is NoneS
     if covs is None:
         #print(f"No Covs!")
         return False
