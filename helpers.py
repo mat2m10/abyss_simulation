@@ -91,7 +91,9 @@ def simulate_genos(G, L, c, k, M, HWE):
         labels_pop += [i+1]*c
     
     simulated_genotype["populations"] = labels_pop
-    simulated_genotype['populations'] = simulated_genotype['populations'].apply(lambda x: 1 if x in [1, 2] else 2)
+
+    # Uncomment if you want mixed populations
+    #simulated_genotype['populations'] = simulated_genotype['populations'].apply(lambda x: 1 if x in [1, 2] else 2)
     
     unique_pops = simulated_genotype['populations'].unique()
     unique_pops.sort()
