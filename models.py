@@ -100,6 +100,7 @@ def manhattan_linear(geno, y, covs=None):
     snps = []
     coefs = []
     AFs = []
+    covs_coef = []
     if check_columns_pheno(geno, y):
         
         # rename to not get the correct betas and p-values back
@@ -114,6 +115,7 @@ def manhattan_linear(geno, y, covs=None):
                     betas, p_values = ols_regression(pheno_with_suffix[[f"{snp}_pheno"]], X, covs_with_suffix[[f"{snp}_covariate"]])
                     
                     coefs.append(betas[snp])
+                    
                     Ps.append(p_values[snp])
                     
                     snps.append(snp.split("_AF_")[0])
