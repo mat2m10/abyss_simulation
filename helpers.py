@@ -438,12 +438,12 @@ def gauss_blob_risk_fun(x, y):
 def hi_gauss_blob_risk_fun(x, y):
     return 2 * np.exp(-((x - 0.25)**2 + (y - 0.75)**2) / (2 * 0.25**2))
 
-def hi_hyperbole_fun(x, y):
+def hi_hyperbole_risk_fun(x, y):
     return 2 *((x-0.5)**2 + (y-0.5)**2)
 
-def hi_tangeant_fun(x, y):
+def hi_tangeant_risk_fun(x, y):
     return (x-0.5)**3 + (y-0.5)**3
 
-def sine_fun(x, y):
+def sine_risk_fun(x, y):
     f = 2
     return np.sin(f * (x+y)*2 * np.pi)

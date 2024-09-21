@@ -1,7 +1,7 @@
 # Define parameters
-G <- 5
-L <- 5
-c <- 5
+G <- 50
+L <- 50
+c <- 50
 k <- 10
 M <- 0.1
 HWE <- 1
