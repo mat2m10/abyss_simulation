@@ -11,3 +11,4 @@ k-means-constrained  # Variant to K-means algorithm that enables to have cluster
 statsmodels  # Tool for statistical calculations
 jupyter  # Enable to open jupyter notebook
 hdbscan  # Hierarchical Density-Based Spatial Clustering of Applications with Noise
+r-base
