@@ -5,7 +5,7 @@ c <- 50
 k <- 10
 M <- 0.1
 HWE <- 1
-nr_humans <- 50
+nr_humans <- 2000
 nr_snps <- 2000
 bottleneck_nr <- 64
 
