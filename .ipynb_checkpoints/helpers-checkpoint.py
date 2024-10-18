@@ -134,17 +134,17 @@ def simulate_genos(G, L, c, k, M, HWE):
                 pop_geno = np.random.choice(genotypes, size=total, p=[freq_maj, freq_het, freq_min])
 
                 # Check for missing genotypes and replace elements until all genotypes are present
-                #missing_genotypes = [g for g in genotypes if g not in pop_geno]
+                missing_genotypes = [g for g in genotypes if g not in pop_geno]
                 
                 # Use a while loop to ensure no genotype is missing
-                #while missing_genotypes:
-                #    for missing in missing_genotypes:
-                #        # Randomly choose an index to replace
-                #        idx = np.random.randint(0, total)
-                #        pop_geno[idx] = missing
+                while missing_genotypes:
+                    for missing in missing_genotypes:
+                        # Randomly choose an index to replace
+                        idx = np.random.randint(0, total)
+                        pop_geno[idx] = missing
                     
-                #    # Recheck which genotypes are missing after replacement
-                #    missing_genotypes = [g for g in genotypes if g not in pop_geno]
+                    # Recheck which genotypes are missing after replacement
+                    missing_genotypes = [g for g in genotypes if g not in pop_geno]
                 
                 temp_pop[col] = pop_geno
     
