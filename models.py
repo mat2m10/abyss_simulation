@@ -100,7 +100,7 @@ def manhattan_linear(geno, y, covs=None):
     snps = []
     coefs = []
     AFs = []
-    covs_coef = []
+    intercepts = []
     if check_columns_pheno(geno, y):
         
         # rename to not get the correct betas and p-values back
@@ -113,13 +113,14 @@ def manhattan_linear(geno, y, covs=None):
                 for snp in list(geno.columns):
                     X = geno[snp]
                     betas, p_values = ols_regression(pheno_with_suffix[[f"{snp}_pheno"]], X, covs_with_suffix[[f"{snp}_covariate"]])
-                    
                     coefs.append(betas[snp])
                     
                     Ps.append(p_values[snp])
                     
                     snps.append(snp.split("_AF_")[0])
                     AFs.append(snp.split("_AF_")[1])
+                    intercepts.append(betas['const'])
+                    
 
             except:
                 # Except if covs is a dictionnary
@@ -132,6 +133,8 @@ def manhattan_linear(geno, y, covs=None):
                     
                     snps.append(snp.split("_AF_")[0])
                     AFs.append(snp.split("_AF_")[1])
+                    intercepts.append(betas['const'])
+                    
         else:
             for snp in list(geno.columns):
                 X = geno[snp]
@@ -142,6 +145,8 @@ def manhattan_linear(geno, y, covs=None):
                 
                 snps.append(snp.split("_AF_")[0])
                 AFs.append(snp.split("_AF_")[1])
+                intercepts.append(betas['const'])
+                
     else:
         if check_columns_covs(geno, covs):
             # rename to not get the correct betas and p-values back
@@ -156,6 +161,8 @@ def manhattan_linear(geno, y, covs=None):
                     
                     snps.append(snp.split("_AF_")[0])
                     AFs.append(snp.split("_AF_")[1])
+                    intercepts.append(betas['const'])
+                    
 
             except:
                 # Except if covs is a dictionnary
@@ -168,6 +175,8 @@ def manhattan_linear(geno, y, covs=None):
                     
                     snps.append(snp.split("_AF_")[0])
                     AFs.append(snp.split("_AF_")[1])
+                    intercepts.append(betas['const'])
+                    
         else:
             for snp in list(geno.columns):
                 X = geno[snp]
@@ -178,8 +187,10 @@ def manhattan_linear(geno, y, covs=None):
                 
                 snps.append(snp.split("_AF_")[0])
                 AFs.append(snp.split("_AF_")[1])
+                intercepts.append(betas['const'])
+                
     logPs = -np.log10(Ps)
-    df = pd.DataFrame({'snp':snps,'coefs':coefs, "AFs":AFs, "Ps": Ps, "-logPs": logPs})
+    df = pd.DataFrame({'snp':snps,'coefs':coefs, "intercept":intercepts, "AFs":AFs, "Ps": Ps, "-logPs": logPs})
     return df
 
 def gc(df):
