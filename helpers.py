@@ -58,8 +58,8 @@ def simulate_genos(G, L, c, k, M, HWE):
         print(result.stderr)
         pass
     
-    os.makedirs(f"data/concept/genotype/raw",exist_ok=True)
-    os.system(f"mv simulated_genotypes_G{G}_L{L}_c{c}_k{k}_M{M}.csv data/concept/genotype/raw/")
+    os.makedirs(f"data/G{G}_L{L}_c{c}_k{k}_M{M}_HWE{HWE}/genotype/raw",exist_ok=True)
+    os.system(f"mv simulated_genotypes_G{G}_L{L}_c{c}_k{k}_M{M}.csv data/G{G}_L{L}_c{c}_k{k}_M{M}_HWE{HWE}/genotype/raw/")
     
     # Thresholds
     very_rare_threshold_L = float(dict['very_rare_threshold_L'])
@@ -71,7 +71,7 @@ def simulate_genos(G, L, c, k, M, HWE):
     common_threshold_L = float(dict['common_threshold_L'])
     common_threshold_H = float(dict['common_threshold_H'])
     
-    file = f"data/concept/genotype/raw/simulated_genotypes_G{G}_L{L}_c{c}_k{k}_M{M}.csv"
+    file = f"data/G{G}_L{L}_c{c}_k{k}_M{M}_HWE{HWE}/genotype/raw/simulated_genotypes_G{G}_L{L}_c{c}_k{k}_M{M}.csv"
     path_simulated_file = "./"+ file
 
     
